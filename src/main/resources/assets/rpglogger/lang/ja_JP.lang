@@ -1,0 +1,45 @@
+rpglogger.options.title=RPG Logger 設定
+
+rpglogger.options.category.message=メッセージ
+rpglogger.options.category.system=システム
+rpglogger.options.category.display=表示
+
+rpglogger.options.openLogFile=デスクトップでログファイルを開く
+rpglogger.options.exportLog=ログをファイルに残す
+rpglogger.options.allyPrefix=仲間の呼び方
+rpglogger.options.position=配置
+rpglogger.options.scale=スケール
+rpglogger.options.lines=メッセージ数
+rpglogger.options.opacity=不透明度%%
+rpglogger.options.language=メッセージの言語
+rpglogger.options.enemyIdType=敵IDのタイプ
+rpglogger.options.memoryAlert=メモリ警告閾値(%%)
+
+rpglogger.options.scale.0=合わせる
+rpglogger.options.scale.1=小さい
+rpglogger.options.scale.2=普通
+rpglogger.options.scale.3=大きい
+
+rpglogger.options.position.0=右上
+rpglogger.options.position.1=右中央
+rpglogger.options.position.2=左上
+
+rpglogger.options.turnedWindow.on=RPG Loggerウィンドウ オン
+rpglogger.options.turnedWindow.off=RPG Loggerウィンドウ オフ
+
+rpglogger.options.language.auto=自動
+rpglogger.options.language.en_US=英語
+rpglogger.options.language.ja_JP=日本語
+rpglogger.options.language.ja_kana_JP=かな
+
+rpglogger.options.enemyIdType.A=A B C...
+rpglogger.options.enemyIdType.N=1 2 3...
+rpglogger.options.enemyIdType.off=なし
+
+rpglogger.keybind=RPG Logger
+rpglogger.keybind.logWindow=ログウィンドウ表示切替
+rpglogger.keybind.openLog=ログファイルを開く
+
+rpglogger.langfile.incorrect=[RPG Logger] カスタムlangファイルが読み込めませんでした。フォーマットを確認してください。
+rpglogger.langfile.updated=[RPG Logger] カスタムlangファイルを更新しました。
+rpglogger.openLogFileNotice=[RPG Logger] ログファイルを開いています...
