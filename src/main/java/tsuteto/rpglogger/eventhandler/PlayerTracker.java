@@ -17,21 +17,18 @@ public class PlayerTracker
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (rpgLogger == null) return;
         rpgLogger.onPlayerLoginWorld(event.player);
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (rpgLogger == null) return;
         rpgLogger.releaseLogger();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
     {
-        if (rpgLogger == null) return;
         rpgLogger.onPlayerTraveledDimension(event.player);
     }
 }

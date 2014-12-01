@@ -1,15 +1,14 @@
 package tsuteto.rpglogger.stat;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraft.client.gui.GuiOptions;
+import com.google.common.collect.Maps;
 import tsuteto.rpglogger.param.ParamPlayer;
 import tsuteto.rpglogger.param.ParamWorld;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
 import tsuteto.rpglogger.util.CyclicMemory;
 import tsuteto.rpglogger.watcher.WatchBool;
 import tsuteto.rpglogger.watcher.WatchInt;
+
+import java.util.Map;
 
 /**
  * Manages status of the game
@@ -28,15 +27,14 @@ public class StatGame
     public WatchInt statBiome;
     public WatchInt statDimension;
     public WatchInt statWorldChange;
-    public WatchBool statInMenu;
 
     public ParamWorld paramWorld;
 
     public CyclicMemory memoryUsings;
     public WatchBool statMemoryAlert;
 
-    private Map<Integer, StatEntityLivingBase> mobEntities;
-    private Map<Integer, StatEntity> entitiesTracked;
+    private final Map<Integer, StatEntityLivingBase> mobEntities;
+    private final Map<Integer, StatEntity> entitiesTracked;
 
     public StatGame(ParamPlayer player, ParamWorld world, RpgLoggerSettings settings)
     {
@@ -61,10 +59,11 @@ public class StatGame
         }
 
         statWorldChange = new WatchInt(0);
-        statInMenu = new WatchBool(world.currentScreen == GuiOptions.class);
 
-        mobEntities = new ConcurrentHashMap<Integer, StatEntityLivingBase>();
-        entitiesTracked = new ConcurrentHashMap<Integer, StatEntity>();
+        //mobEntities = new ConcurrentHashMap<Integer, StatEntityLivingBase>();
+        mobEntities = Maps.newHashMap();
+        //entitiesTracked = new ConcurrentHashMap<Integer, StatEntity>();
+        entitiesTracked = Maps.newHashMap();
 
         paramWorld = world;
     }

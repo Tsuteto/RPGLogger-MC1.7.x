@@ -43,3 +43,7 @@ rpglogger.keybind.openLog=Open Log File
 rpglogger.langfile.incorrect=[RPG Logger] Could not read custom lang file. Please check the format.
 rpglogger.langfile.updated=[RPG Logger] Updated custom lang file.
 rpglogger.openLogFileNotice=[RPG Logger] Opening log file...
+
+rpglogger.update.server=RPG Logger has been updated to %1$s, available at %2$s
+rpglogger.update.client=§eRPG Logger§r has been updated to §a%1$s§r! %2$s
+rpglogger.update.link=§nDownload here§r

@@ -1,11 +1,5 @@
 package tsuteto.rpglogger.stat;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.minecraft.potion.Potion;
 import tsuteto.rpglogger.ModEntityAccessor;
 import tsuteto.rpglogger.RpgLogger;
@@ -20,6 +14,12 @@ import tsuteto.rpglogger.util.Utilities;
 import tsuteto.rpglogger.watcher.WatchBool;
 import tsuteto.rpglogger.watcher.WatchFloat;
 import tsuteto.rpglogger.watcher.WatchObj;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Manages status of EntityLivingBase
@@ -262,7 +262,7 @@ public class StatEntityLivingBase<E extends ParamEntityLivingBase> extends StatE
             if (this.chkStatTamed())
             {
                 logger.addMsgTranslate("mob.gotTamed",
-                        Color.pink, new Object[] { EntityNameUtil.getDisplayEntityNameWithoutOwner(param) });
+                        Color.pink, EntityNameUtil.getDisplayEntityNameWithoutOwner(param));
             }
             this.chkStatOwner();
 

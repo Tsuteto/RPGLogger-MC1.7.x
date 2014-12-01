@@ -1,29 +1,20 @@
 package tsuteto.rpglogger;
 
-import java.awt.Color;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.biome.BiomeGenBase;
 import tsuteto.rpglogger.logging.RlLogManager;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
-import tsuteto.rpglogger.param.ParamEntity;
-import tsuteto.rpglogger.param.ParamEntityLivingBase;
-import tsuteto.rpglogger.param.ParamMob;
-import tsuteto.rpglogger.param.ParamPlayer;
-import tsuteto.rpglogger.param.ParamWorld;
+import tsuteto.rpglogger.param.*;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
-import tsuteto.rpglogger.stat.StatBattle;
-import tsuteto.rpglogger.stat.StatEntity;
-import tsuteto.rpglogger.stat.StatEntityLivingBase;
-import tsuteto.rpglogger.stat.StatGame;
-import tsuteto.rpglogger.stat.StatPlayer;
+import tsuteto.rpglogger.stat.*;
 import tsuteto.rpglogger.util.EntityNameUtil;
 import tsuteto.rpglogger.util.Utilities;
+
+import java.awt.*;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * RPG Logger Logging Task
@@ -31,48 +22,13 @@ import tsuteto.rpglogger.util.Utilities;
  * @author Tsuteto
  *
  */
-public class LoggerTask extends Thread
+public class LoggerTask
 {
     public RpgLogger rpgLogger;
 
     public LoggerTask(RpgLogger rpgLogger)
     {
         this.rpgLogger = rpgLogger;
-    }
-
-    /**
-     * Run thread
-     */
-    @Override
-    public void run()
-    {
-        while (true)
-        {
-            ready();
-            //long start = System.nanoTime();
-            task();
-            //RpgLogger.systemLog("Thread time: " + (((System.nanoTime() - start) / 1000) / 1000D) + "ms");
-        }
-    }
-
-    /**
-     * Ready for call
-     */
-    public synchronized void ready()
-    {
-        try
-        {
-            wait();
-        }
-        catch (InterruptedException e) {}
-    }
-
-    /**
-     * Kicks the task
-     */
-    public synchronized void kick()
-    {
-        notifyAll();
     }
 
     /**
@@ -271,10 +227,9 @@ public class LoggerTask extends Thread
                 // Obtaining items
                 if (statPlayer.chkStatItemsPickedUp())
                 {
-                    Iterator itr = statPlayer.itemsPickedUp.keySet().iterator();
-                    while (itr.hasNext())
+                    for (Object obj : statPlayer.itemsPickedUp.keySet())
                     {
-                        String displayItemName = (String) itr.next();
+                        String displayItemName = (String)obj;
                         Integer numOfItems = (Integer) statPlayer.itemsPickedUp.get(displayItemName);
                         if (numOfItems >= 5)
                         {
@@ -310,26 +265,20 @@ public class LoggerTask extends Thread
         // Collect params of entities
         // ----------------------------------------
         // System.out.println("entityParams: " + entityParams.size());
-        synchronized (rpgLogger.entityParams)
+        for (ParamEntity param : rpgLogger.entityParams.values())
         {
-            Iterator itr = rpgLogger.entityParams.iterator();
-            while (itr.hasNext())
+            if (!param.isAlive)
             {
-                ParamEntity param = (ParamEntity) itr.next();
-                if (!param.isAlive)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                param.setStat(logger, statGame);
+            param.setStat(logger, statGame);
 
-                if (param instanceof ParamEntityLivingBase && ((ParamEntityLivingBase) param).isTamed)
-                {
-                    player.hasAlly = true;
-                }
+            if (param instanceof ParamEntityLivingBase && ((ParamEntityLivingBase) param).isTamed)
+            {
+                player.hasAlly = true;
             }
         }
-        // System.out.println("mobEntities: " + statGame.mobEntities.size());
 
         // ----------------------------------------
         // EntityLivingBase status
@@ -342,14 +291,11 @@ public class LoggerTask extends Thread
                 StatEntityLivingBase stat = entry.getValue();
                 ParamEntityLivingBase param = (ParamEntityLivingBase) stat.getParam();
 
-                synchronized (rpgLogger.entityParams)
+                if (!rpgLogger.entityParams.containsValue(param)
+                        && !EntityDragon.class.isAssignableFrom(param.entityClass))
                 {
-                    if (!rpgLogger.entityParams.contains(param)
-                            && !EntityDragon.class.isAssignableFrom(param.entityClass))
-                    {
-                        statBattle.enemyMobManager.remove(param);
-                        stat.canRemove = true;
-                    }
+                    statBattle.enemyMobManager.remove(param);
+                    stat.canRemove = true;
                 }
 
                 // Log status of mobs
@@ -408,24 +354,21 @@ public class LoggerTask extends Thread
         // ----------------------------------------
         // Entity status
         // ----------------------------------------
-        synchronized (rpgLogger.entityParams)
+        Iterator<Entry<Integer, StatEntity>> itr = statGame.getEntitiesTracked().entrySet().iterator();
+        while (itr.hasNext())
         {
-            Iterator<Entry<Integer, StatEntity>> itr = statGame.getEntitiesTracked().entrySet().iterator();
-            while (itr.hasNext())
+            Entry<Integer, StatEntity> entry = itr.next();
+            StatEntity stat = entry.getValue();
+            ParamEntity param = stat.getParam();
+            if (!rpgLogger.entityParams.containsValue(param))
             {
-                Entry<Integer, StatEntity> entry = itr.next();
-                StatEntity stat = entry.getValue();
-                ParamEntity param = stat.getParam();
-                if (!rpgLogger.entityParams.contains(param))
-                {
-                    stat.logStat(logger, statGame);
+                stat.logStat(logger, statGame);
 
-                    // else if (param instanceof ParamEnderCrystal && !param.isAlive) {
-                    //     // Breaking EnderCrystal
-                    //     logger.addMsgTranslate("entity.destroyed", new Object[]{rpgLogger.getEntityName(param)}, Color.yellow);
-                    // }
-                    itr.remove();
-                }
+                // else if (param instanceof ParamEnderCrystal && !param.isAlive) {
+                //     // Breaking EnderCrystal
+                //     logger.addMsgTranslate("entity.destroyed", new Object[]{rpgLogger.getEntityName(param)}, Color.yellow);
+                // }
+                itr.remove();
             }
         }
 
@@ -481,7 +424,7 @@ public class LoggerTask extends Thread
             if (statGame.statSceneOfDay.getVal() == 0)
             {
                 logger.addMsgTranslate("env.dayBegan",
-                        Color.green, new Object[] { Utilities.toOrdinalNumber(world.worldTime / 24000 + 1) });
+                        Color.green, Utilities.toOrdinalNumber(world.worldTime / 24000 + 1));
             }
         }
 
@@ -545,7 +488,7 @@ public class LoggerTask extends Thread
                 }
                 else
                 {
-                    float dispTemp = Utilities.calcTemperatureCelsius(world.temperature);
+                    double dispTemp = Utilities.calcTemperatureCelsius(world.temperature);
                     logger.addMsgTranslate("idle.temp", Color.white, dispTemp);
                 }
                 break;

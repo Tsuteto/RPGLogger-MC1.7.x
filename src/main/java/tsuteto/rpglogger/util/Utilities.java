@@ -1,7 +1,6 @@
 package tsuteto.rpglogger.util;
 
-import java.awt.Color;
-
+import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -17,10 +16,9 @@ import net.minecraft.world.biome.WorldChunkManager;
 import tsuteto.rpglogger.Lang;
 import tsuteto.rpglogger.RpgLogger;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
-import tsuteto.rpglogger.param.ParamPlayer;
 import tsuteto.rpglogger.stat.StatEntityLivingBase;
 
-import com.google.common.base.Strings;
+import java.awt.*;
 
 /**
  * Utilities
@@ -157,7 +155,7 @@ public class Utilities
         }
         catch (Exception e)
         {
-            RpgLogger.infoLog("Failed to get temperature");
+            RpgLogger.errorLog("Failed to get temperature");
             return -1;
         }
     }
@@ -165,9 +163,9 @@ public class Utilities
     /**
      * Calculates temperature in degree Celsius from game parameter
      */
-    public static float calcTemperatureCelsius(float gameVal)
+    public static double calcTemperatureCelsius(float gameVal)
     {
-        return gameVal * 55F - 15F;
+        return (gameVal > 0.0F ? Math.atan(gameVal * 1.5) * 40.0D : Math.atan(gameVal * 5.0D) * 5.0D) - 10.0D;
     }
 
     /**
@@ -182,7 +180,7 @@ public class Utilities
         }
         catch (Exception e)
         {
-            RpgLogger.infoLog("Failed to get rainfall");
+            RpgLogger.errorLog("Failed to get rainfall");
             return -1;
         }
     }

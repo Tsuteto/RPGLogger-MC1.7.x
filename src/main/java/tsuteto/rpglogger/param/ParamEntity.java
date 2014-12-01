@@ -49,14 +49,11 @@ public class ParamEntity<E extends Entity>
         {
             try
             {
-                synchronized (player.worldObj)
-                {
-                    canBeSeen = player.canEntityBeSeen(entity);
-                }
+                canBeSeen = player.canEntityBeSeen(entity);
             }
-            catch (NullPointerException e)
+            catch (Exception e)
             {
-                RpgLogger.infoLog("Failed to get canBeSeen for " + entity.toString());
+                RpgLogger.errorLog("Failed to get canBeSeen for " + entity.toString());
                 canBeSeen = false;
             }
         }

@@ -1,12 +1,12 @@
 package tsuteto.rpglogger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.config.Configuration;
+import tsuteto.rpglogger.command.CommandTemperature;
+import tsuteto.rpglogger.util.UpdateNotification;
 
 /**
  * Loader Class of the RPG Logger
@@ -14,7 +14,8 @@ import net.minecraftforge.common.config.Configuration;
  * @author Tsuteto
  *
  */
-@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.7.2-MC1.6.2",
+@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.8.0-MC1.7.2",
+        acceptedMinecraftVersions = "[1.7.2,1.8)",
         guiFactory = "tsuteto.rpglogger.settings.fml.RlGuiFactory")
 public class RPGLoggerLoader
 {
@@ -26,6 +27,7 @@ public class RPGLoggerLoader
     private ModMetadata metadada;
 
     private final RpgLogger rpgLogger;
+    public static UpdateNotification updateChecker = null;
 
     public RPGLoggerLoader()
     {
@@ -40,6 +42,12 @@ public class RPGLoggerLoader
 
         Configuration conf = new Configuration(event.getSuggestedConfigurationFile());
         this.rpgLogger.loadFmlSettings(conf);
+
+        if (rpgLogger.settings.getUpdateCheck())
+        {
+            updateChecker = new UpdateNotification();
+            updateChecker.checkUpdate();
+        }
     }
 
     @Mod.EventHandler
@@ -58,5 +66,23 @@ public class RPGLoggerLoader
         {
             rpgLogger.prepare();
         }
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event)
+    {
+        // Notify if update is available
+        if (updateChecker != null && event.getSide() == Side.SERVER)
+        {
+            updateChecker.notifyUpdate(event.getServer(), event.getSide());
+        }
+
+        event.registerServerCommand(new CommandTemperature());
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStoppingEvent event)
+    {
+        rpgLogger.releaseLogger();
     }
 }

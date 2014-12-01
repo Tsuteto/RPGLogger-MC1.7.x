@@ -1,22 +1,12 @@
 package tsuteto.rpglogger.param;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderEye;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.entity.projectile.EntityWitherSkull;
@@ -24,6 +14,10 @@ import tsuteto.rpglogger.EntityListComparator;
 import tsuteto.rpglogger.RpgLogger;
 import tsuteto.rpglogger.accessor.EntityVillagerAccessor;
 import tsuteto.rpglogger.util.Utilities;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class ParamConverter
 {
@@ -111,9 +105,9 @@ public class ParamConverter
 //        return paramList;
 //    }
 
-    public static List<ParamEntity> convertAllEntities(List<Entity> worldEntityList, final EntityPlayer player, final ParamWorld world)
+    public static void convertAllEntities(List<Entity> worldEntityList, final EntityPlayer player, final ParamWorld world, Map<Integer, ParamEntity> entityParams)
     {
-        List paramList = new ArrayList<ParamEntity>();
+        entityParams.clear();
 
         for (final Entity entity : worldEntityList)
         {
@@ -123,22 +117,23 @@ public class ParamConverter
                 continue;
             }
 
-            if (paramList.size() <= 256)
+            if (entityParams.size() <= 256)
             {
                 ParamEntity param = convertEntityToParam(entity, player, world);
                 if (param != null)
                 {
-                    paramList.add(param);
+                    entityParams.put(param.entityId, param);
                 }
             }
         }
-
-        return paramList;
     }
 
-    public static List<ParamEntity> convertAllEntities(Entity[] worldEntityList, final EntityPlayer player, final ParamWorld world)
+    public static void convertAllEntities(Entity[] worldEntityList, final EntityPlayer player, final ParamWorld world, Map<Integer, ParamEntity> entityParams)
     {
         boolean isCrowd = false;
+
+        entityParams.clear();
+
         // System.out.println("worldEntityList: " + worldEntityList.size());
 
         // Turn the flag on to add some constraints when there are more than 256
@@ -149,8 +144,6 @@ public class ParamConverter
             // Sort the entity list by distance from the player
             Arrays.sort(worldEntityList, new EntityListComparator(player));
         }
-
-        List paramList = new ArrayList<ParamEntity>();
 
         for (final Entity entity : worldEntityList)
         {
@@ -173,17 +166,15 @@ public class ParamConverter
                 }
             }
 
-            if (paramList.size() <= 256)
+            if (entityParams.size() <= 256)
             {
                 ParamEntity param = convertEntityToParam(entity, player, world);
                 if (param != null)
                 {
-                    paramList.add(param);
+                    entityParams.put(param.entityId, param);
                 }
             }
         }
-
-        return paramList;
     }
 
     /**

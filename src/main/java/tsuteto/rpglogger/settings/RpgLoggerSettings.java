@@ -61,7 +61,7 @@ public class RpgLoggerSettings
 
     public boolean isEnableExportLog()
     {
-        return api.isEnableExportLog();
+        return api.isExportLogEnabled();
     }
 
     public EnumWindowPosition getPosition()
@@ -87,5 +87,10 @@ public class RpgLoggerSettings
     public int getMemoryAlertThreshold()
     {
         return api.getMemoryAlertThreshold();
+    }
+
+    public boolean getUpdateCheck()
+    {
+        return api.getUpdateCheck();
     }
 }

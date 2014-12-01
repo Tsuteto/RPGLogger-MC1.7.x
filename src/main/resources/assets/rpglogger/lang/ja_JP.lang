@@ -43,3 +43,7 @@ rpglogger.keybind.openLog=ログファイルを開く
 rpglogger.langfile.incorrect=[RPG Logger] カスタムlangファイルが読み込めませんでした。フォーマットを確認してください。
 rpglogger.langfile.updated=[RPG Logger] カスタムlangファイルを更新しました。
 rpglogger.openLogFileNotice=[RPG Logger] ログファイルを開いています...
+
+rpglogger.update.server=RPG Logger %1$sに更新しました! ダウンロード: %2$s
+rpglogger.update.client=§eRPG Logger§r §a%1$s§rに更新しました! %2$s
+rpglogger.update.link=§nこちらからダウンロード§r

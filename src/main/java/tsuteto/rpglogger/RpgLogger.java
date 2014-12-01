@@ -1,11 +1,12 @@
 package tsuteto.rpglogger;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
@@ -34,6 +35,7 @@ import tsuteto.rpglogger.logging.RlMsgTranslate;
 import tsuteto.rpglogger.param.*;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
 import tsuteto.rpglogger.settings.fml.OptionsUsingFml;
+import tsuteto.rpglogger.stat.StatClient;
 import tsuteto.rpglogger.stat.StatEntityLivingBase;
 import tsuteto.rpglogger.stat.StatEntityTameable;
 import tsuteto.rpglogger.stat.StatGame;
@@ -72,10 +74,11 @@ public class RpgLogger
     private LoggerTask loggerTask;
 
     public StatGame statGame = null;
+    public StatClient statClient = null;
     public ParamWorld paramWorld = null;
     public ParamPlayer paramPlayer = null;
 
-    public List<ParamEntity> entityParams = Lists.newArrayList();
+    public final Map<Integer, ParamEntity> entityParams = Maps.newHashMap();
 
     // For a buggy behavior that the takenFromFurnace is called twice at once
     private boolean hasCalledSmelting = false;
@@ -168,6 +171,9 @@ public class RpgLogger
         // Start the task
         //this.loggerTask.start();
 
+        // Initialize client stat
+        this.statClient = new StatClient();
+
         // Attempt to obtain DQM tameable class
         try
         {
@@ -254,14 +260,19 @@ public class RpgLogger
 
     public void onPlayerLoginWorld(EntityPlayer player)
     {
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        // Update Notification
+        if (RPGLoggerLoader.updateChecker != null)
+        {
+            RPGLoggerLoader.updateChecker.notifyUpdate(player, Side.CLIENT);
+        }
 
+        // Load lang info and prepare for the world
         msgTrans.setLanguage(Utilities.chooseLanguage(settings.getLanguage()));
 
         String worldName = player.worldObj.getWorldInfo().getWorldName();
         logFileWriter = new LogFileWriter(worldName);
 
-        paramWorld = new ParamWorld(player.worldObj, player, mc.currentScreen);
+        paramWorld = new ParamWorld(player.worldObj, player);
         paramPlayer = new ParamPlayer(player, paramWorld);
         this.statGame = new StatGame(paramPlayer, paramWorld, settings);
         this.loaded = false;
@@ -277,7 +288,6 @@ public class RpgLogger
 
     public void onPlayerTraveledDimension(EntityPlayer player)
     {
-        Minecraft mc = FMLClientHandler.instance().getClient();
         setupTick = 3;
         loaded = false;
 
@@ -295,36 +305,69 @@ public class RpgLogger
 
     /**
      * Called on tick
-     *
-     * @param mc
      */
-    public void onTick(final Minecraft mc)
+    public void onServerTick()
     {
         long start = System.nanoTime();
-        //if (!this.loaded) return;
 
-        EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(mc.thePlayer.getCommandSenderName());
-        if (player == null) return;
-
-        World world = player.worldObj;
-        paramWorld = new ParamWorld(world, player, mc.currentScreen);
-        paramPlayer = new ParamPlayer(player, paramWorld);
-
-        // ----------------------------------------
-        // Collect entities in the world
-        // ----------------------------------------
-        //Entity[] worldEntityList = (Entity[]) world.loadedEntityList.toArray(new Entity[0]);
-        List<Entity> worldEntityList = world.getEntitiesWithinAABB(EntityLivingBase.class, mc.thePlayer.boundingBox.expand(32.0D, 32.0D, 32.0D));
-
-        List<ParamEntity> list = ParamConverter.convertAllEntities(worldEntityList, player, paramWorld);
-
-        synchronized (entityParams)
+        try
         {
-            this.entityParams = list;
+            if (setupTick > 0)
+            {
+                setupTick--;
+                return;
+            }
+
+            Minecraft mc = FMLClientHandler.instance().getClient();
+            if (mc.thePlayer == null) return;
+            EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(mc.thePlayer.getCommandSenderName());
+
+            World world = player.worldObj;
+            paramWorld = new ParamWorld(world, player);
+            paramPlayer = new ParamPlayer(player, paramWorld);
+
+            // ----------------------------------------
+            // Collect entities in the world
+            // ----------------------------------------
+            //Entity[] worldEntityList = (Entity[]) world.loadedEntityList.toArray(new Entity[0]);
+            List<Entity> worldEntityList = world.getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(32.0D, 32.0D, 32.0D));
+
+            ParamConverter.convertAllEntities(worldEntityList, player, paramWorld, entityParams);
+
+            if (!loaded)
+            {
+                this.statGame = new StatGame(paramPlayer, paramWorld, settings);
+                loaded = true;
+            }
+
+            //loggerTask.kick();
+            loggerTask.task();
+
+            // Set flags
+            hasCalledSmelting = false;
+            hasCalledCrafting = false;
+
         }
+        finally
+        {
+            double elapsed = (System.nanoTime() - start) / 1000000.0D;
+            if (elapsed > 100.0D)
+            {
+                infoLog("Overload warning. onTick time: %.0fms", elapsed);
+            }
+        }
+    }
+
+    public void onClientTick()
+    {
+        Minecraft mc = FMLClientHandler.instance().getClient();
+
+        windowRenderer.updateTick();
+
+        ParamClient paramClient = new ParamClient(mc);
 
         // Game Settings
-        if (statGame.statInMenu.checkVal(paramWorld.currentScreen == GuiIngameMenu.class) && !statGame.statInMenu.getVal())
+        if (statClient.statInMenu.checkVal(paramClient.currentScreen == GuiIngameMenu.class) && !statClient.statInMenu.getVal())
         {
             boolean isLangChanged = msgTrans.lang != settings.getLanguage();
             // Reload lang file
@@ -338,25 +381,6 @@ public class RpgLogger
                 mc.thePlayer.addChatMessage(new ChatComponentTranslation("rpglogger.langfile.incorrect"));
             }
         }
-
-        if (!loaded)
-        {
-            this.statGame = new StatGame(paramPlayer, paramWorld, settings);
-            loaded = true;
-        }
-
-        //loggerTask.kick();
-        loggerTask.task();
-
-        // Set flags
-        hasCalledSmelting = false;
-        hasCalledCrafting = false;
-
-        double elapsed = (System.nanoTime() - start) / 1000000.0D;
-        if (elapsed > 100.0D)
-        {
-            infoLog("Overload warning. onTick time: %.0fms", elapsed);
-        }
     }
 
     /**
@@ -364,13 +388,10 @@ public class RpgLogger
      */
     public void releaseLogger()
     {
-        if (loaded)
-        {
-            loaded = false;
-            logger.clearLogList();
-            logFileWriter.closeLogfile();
-            infoLog(String.format("Released from the world '%s'", paramWorld.worldName));
-        }
+        loaded = false;
+        logger.clearLogList();
+        logFileWriter.closeLogfile();
+        infoLog("Released from the world '%s'", paramWorld.worldName);
     }
 
     /**
@@ -732,11 +753,7 @@ public class RpgLogger
 
     public ParamEntity getParamByEntityId(int id)
     {
-        for (ParamEntity p : this.entityParams)
-        {
-            if (p.entityId == id) return p;
-        }
-        return null;
+        return this.entityParams.get(id);
     }
 
     /**

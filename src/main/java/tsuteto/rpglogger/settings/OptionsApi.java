@@ -14,20 +14,13 @@ public interface OptionsApi
     String OPTION_NAME = "RpgLogger";
 
     float getOpacity();
-
     int getLines();
-
     int getScale();
-
     EnumWindowPosition getPosition();
-
-    boolean isEnableExportLog();
-
+    boolean isExportLogEnabled();
     int getAllyPrefix();
-
     Lang getLanguage();
-
     EnumEnemyIdType getEnemyIdType();
-
     int getMemoryAlertThreshold();
+    boolean getUpdateCheck();
 }

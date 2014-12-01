@@ -29,13 +29,14 @@ public class OptionsUsingFml implements OptionsApi
 
     public int opacity = 80;
     public int lines = 15;
-    public boolean isEnableExportLog = true;
+    public boolean isExportLogEnabled = true;
     public int scale = 0;
     public int position = 0;
     public int allyPrefix = 0;
     public String language = "auto";
     public String enemyIdType = "A";
     public int memoryAlert = 90;
+    public boolean updateCheck = true;
 
     public OptionsUsingFml(Configuration conf)
     {
@@ -69,9 +70,6 @@ public class OptionsUsingFml implements OptionsApi
                 .setConfigEntryClass(CycleValueTranslateEntry.class)
                 .getInt();
 
-        this.isEnableExportLog = conf.get(CAT_SYSTEM, "enableExportLog", isEnableExportLog, "Toggle exporting log to file. 'true' or 'false'.")
-                .setLanguageKey("rpglogger.options.exportLog").getBoolean(isEnableExportLog);
-
         this.language = conf.get(CAT_MESSAGE, "language", language, "Language in logger messages. auto=follow the game settings, ja_JP=Japanese, ja_kana_JP=Japanese kana, en_US=English.")
                 .setValidValues(new String[]{"auto", "ja_JP", "ja_kana_JP", "en_US"})
                 .setLanguageKey("rpglogger.options.language")
@@ -96,9 +94,18 @@ public class OptionsUsingFml implements OptionsApi
                 .setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class)
                 .getInt();
 
+        this.isExportLogEnabled = conf.get(CAT_SYSTEM, "enableExportLog", isExportLogEnabled, "Toggle exporting log to file. 'true' or 'false'.")
+                .setLanguageKey("rpglogger.options.exportLog")
+                .getBoolean(isExportLogEnabled);
+
+        this.updateCheck = conf.get(CAT_SYSTEM, "updateCheck", updateCheck, "Check this mod is up to date or not.")
+                .setRequiresMcRestart(true)
+                .setLanguageKey("rpglogger.options.updateCheck")
+                .getBoolean(updateCheck);
+
         conf.getCategory(CAT_DISPLAY).setLanguageKey("rpglogger.options.category.display");
-        conf.getCategory(CAT_SYSTEM).setLanguageKey("rpglogger.options.category.system");
         conf.getCategory(CAT_MESSAGE).setLanguageKey("rpglogger.options.category.message");
+        conf.getCategory(CAT_SYSTEM).setLanguageKey("rpglogger.options.category.system");
 
         if (conf.hasChanged())
         {
@@ -135,9 +142,9 @@ public class OptionsUsingFml implements OptionsApi
     }
 
     @Override
-    public boolean isEnableExportLog()
+    public boolean isExportLogEnabled()
     {
-        return this.isEnableExportLog;
+        return this.isExportLogEnabled;
     }
 
     @Override
@@ -173,5 +180,11 @@ public class OptionsUsingFml implements OptionsApi
     public int getMemoryAlertThreshold()
     {
         return this.memoryAlert;
+    }
+
+    @Override
+    public boolean getUpdateCheck()
+    {
+        return this.updateCheck;
     }
 }

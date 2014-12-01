@@ -1,6 +1,5 @@
 package tsuteto.rpglogger.param;
 
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -30,11 +29,9 @@ public class ParamWorld
     public long worldTime;
     public String worldName;
 
-    public Class currentScreen;
-
     public int worldObjHash;
 
-    public ParamWorld(World world, EntityPlayer player, GuiScreen currentScreen)
+    public ParamWorld(World world, EntityPlayer player)
     {
         int px = MathHelper.floor_double(player.posX);
         int py = MathHelper.floor_double(player.posY);
@@ -57,8 +54,6 @@ public class ParamWorld
 
     	temperature = Utilities.getTemperature(world, px, py, pz);
     	rainfall = Utilities.getRainfall(world, px, pz);
-
-        this.currentScreen = currentScreen == null ? null : currentScreen.getClass();
 
         worldObjHash = world.hashCode();
     }
