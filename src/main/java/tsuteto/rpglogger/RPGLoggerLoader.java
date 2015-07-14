@@ -15,7 +15,7 @@ import tsuteto.rpglogger.util.UpdateNotification;
  * @author Tsuteto
  *
  */
-@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.9.0-MC1.7.2",
+@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.9.1-MC1.7.2",
         acceptedMinecraftVersions = "[1.7.2,1.8)",
         guiFactory = "tsuteto.rpglogger.settings.fml.RlGuiFactory")
 public class RPGLoggerLoader

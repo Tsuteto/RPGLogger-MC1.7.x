@@ -355,6 +355,7 @@ public class GuiRlControl extends GuiScreen
         }
         else if (p_146284_1_.id == 1)
         {
+            RpgLogger.getInstance().isWindowEnabled ^= true;
             btnToggleWindow.displayString = this.getToggleWindowBtnString();
         }
         else if (p_146284_1_.id == 100)

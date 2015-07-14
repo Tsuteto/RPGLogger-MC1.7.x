@@ -8,7 +8,7 @@ public class ModInfo
     {
         meta.modId = RPGLoggerLoader.modid;
         meta.name = "RPG Logger";
-        meta.version = "3.7";
+        meta.version = "3.9";
         meta.url = "http://forum.minecraftuser.jp/viewtopic.php?f=13&t=1014";
         meta.credits = "Mob name tag featured by yuyu/haoling's Nameplate Mod";
         meta.authorList.add("Tsuteto");
