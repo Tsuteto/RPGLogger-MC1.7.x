@@ -1,13 +1,20 @@
 rpglogger.options.title=RPG Logger 設定
 
 rpglogger.options.category.message=メッセージ
+rpglogger.options.category.msgSwitch=メッセージスイッチ
 rpglogger.options.category.system=システム
 rpglogger.options.category.display=表示
 
-rpglogger.options.openLogFile=デスクトップでログファイルを開く
+rpglogger.options.category.player=プレイヤー
+rpglogger.options.category.mob=Mob
+rpglogger.options.category.env=環境
+rpglogger.options.category.misc=その他
+
+rpglogger.options.openLogFile=デスクトップにログファイルを開く
 rpglogger.options.exportLog=ログをファイルに残す
 rpglogger.options.allyPrefix=仲間の呼び方
 rpglogger.options.position=配置
+rpglogger.options.width=幅
 rpglogger.options.scale=スケール
 rpglogger.options.lines=メッセージ数
 rpglogger.options.opacity=不透明度%%
@@ -24,9 +31,6 @@ rpglogger.options.position.0=右上
 rpglogger.options.position.1=右中央
 rpglogger.options.position.2=左上
 
-rpglogger.options.turnedWindow.on=RPG Loggerウィンドウ オン
-rpglogger.options.turnedWindow.off=RPG Loggerウィンドウ オフ
-
 rpglogger.options.language.auto=自動
 rpglogger.options.language.en_US=英語
 rpglogger.options.language.ja_JP=日本語
@@ -36,14 +40,119 @@ rpglogger.options.enemyIdType.A=A B C...
 rpglogger.options.enemyIdType.N=1 2 3...
 rpglogger.options.enemyIdType.off=なし
 
+rpglogger.control.title=RPG Logger コントロール
+rpglogger.control.openLog=デスクトップにログファイルを開く
+rpglogger.control.toggleWindow=ログウィンドウ表示: %s
+rpglogger.control.guide=* ログはマウスホイールでスクロール可能
+rpglogger.control.close=閉じる
+
 rpglogger.keybind=RPG Logger
-rpglogger.keybind.logWindow=ログウィンドウ表示切替
-rpglogger.keybind.openLog=ログファイルを開く
+rpglogger.keybind.openControl=コントロール画面を開く
 
 rpglogger.langfile.incorrect=[RPG Logger] カスタムlangファイルが読み込めませんでした。フォーマットを確認してください。
 rpglogger.langfile.updated=[RPG Logger] カスタムlangファイルを更新しました。
-rpglogger.openLogFileNotice=[RPG Logger] ログファイルを開いています...
 
 rpglogger.update.server=RPG Logger %1$sに更新しました! ダウンロード: %2$s
 rpglogger.update.client=§eRPG Logger§r §a%1$s§rに更新しました! %2$s
 rpglogger.update.link=§nこちらからダウンロード§r
+
+#
+#
+#
+rpglogger.options.player.gainedXp=経験値を手に入れた
+rpglogger.options.player.lostXp=経験値を失った
+rpglogger.options.player.increasedLvl=レベルが上がった
+rpglogger.options.player.gotInWater=水に入った
+rpglogger.options.player.gotOutOfWater=水から出た
+rpglogger.options.player.healed=体力が回復した
+rpglogger.options.player.filledBelly=お腹が満たされた
+rpglogger.options.player.fellAsleep=眠りについた
+rpglogger.options.player.wokeUp=目がさめた
+rpglogger.options.player.gaveDmg=敵にダメージを与えた
+rpglogger.options.player.gaveDmgBy=道具で敵にダメージを与えた
+rpglogger.options.player.tookDmg=ダメージを受けた
+rpglogger.options.player.tookDmgBy=敵からダメージを受けた
+rpglogger.options.player.tookDmgByMob=敵の道具でダメージを受けた
+rpglogger.options.player.defeated=敵を倒した
+rpglogger.options.player.death=死んだ
+rpglogger.options.player.itemPickup=アイテムを拾った
+rpglogger.options.player.sumItems=アイテムを複数手に入れた
+rpglogger.options.player.crafted=道具を作った
+rpglogger.options.player.smelted=アイテムをかまどから取り出した
+rpglogger.options.player.fell=落下した
+rpglogger.options.player.threw=アイテムを投げた
+rpglogger.options.player.bow=あいさつした
+rpglogger.options.player.backToSurface=地上に戻った
+rpglogger.options.player.goingUnderground=地下に潜っていく
+rpglogger.options.player.walked=歩いた距離
+rpglogger.options.player.foundMob=敵があらわれた
+rpglogger.options.player.lostMob=敵を見失った
+rpglogger.options.player.respawn=リスポーン
+rpglogger.options.player.emptyHand=素手になった
+rpglogger.options.player.tookItem=アイテムを手に持った
+rpglogger.options.player.rode=Mobに乗った
+rpglogger.options.player.getOff=Mobから降りた
+rpglogger.options.player.finishedBattle=戦闘終了
+rpglogger.options.player.achievement=実績を獲得した
+rpglogger.options.player.potion=ポーション効果
+rpglogger.options.player.idle=なにもしてない時
+
+rpglogger.options.party.owned.single=仲間が敵を倒した
+rpglogger.options.party.owned.multiple=仲間が敵を複数倒した
+
+rpglogger.options.item.flew=アイテムが飛んだ距離
+
+rpglogger.options.fireworks.launch=花火が打ち上がった
+
+rpglogger.options.wolf.shaking=オオカミは体を震わせた
+rpglogger.options.wolf.angry=オオカミが怒った
+
+rpglogger.options.bat.flewOff=コウモリが飛び立った
+rpglogger.options.witch.aggressive=ウィッチのポーション
+
+rpglogger.options.mob.gotTamed=仲間になった
+rpglogger.options.mob.healed=体力を回復した
+rpglogger.options.mob.threw=アイテムを投げた
+rpglogger.options.mob.gaveDmg=敵にダメージを与えた
+rpglogger.options.mob.gaveDmgBy=道具で敵にダメージを与えた
+rpglogger.options.mob.tookDmg=ダメージを受けた
+rpglogger.options.mob.tookDmgBy=敵のダメージを受けた
+rpglogger.options.mob.tookDmgByMob=敵の道具でダメージを受けた
+rpglogger.options.mob.defeated=敵を倒した
+rpglogger.options.mob.death=死んだ
+rpglogger.options.mob.spawned=スポーンした
+rpglogger.options.mob.growUp=大きくなった
+rpglogger.options.mob.backToChild=子供に戻った
+rpglogger.options.mob.inLove=愛情を抱いている
+rpglogger.options.mob.rode=乗り物に乗った
+rpglogger.options.mob.getOff=乗り物から降りた
+rpglogger.options.mob.tied=首綱につながれた
+rpglogger.options.mob.released=首綱から解かれた
+rpglogger.options.mob.equippedChest=チェストを装備した
+rpglogger.options.mob.tookOffChest=チェストが外れた
+rpglogger.options.mob.equipped=装備した
+rpglogger.options.mob.tookOffArmor=防具が外れた
+rpglogger.options.mob.temper.inc=機嫌が上がった
+rpglogger.options.mob.temper.dec=機嫌が下がった
+rpglogger.options.mob.potion=ポーション効果
+
+rpglogger.options.villager.isMating=村人がつがいになった
+rpglogger.options.villager.startPlaying=村人が遊び回っている
+
+rpglogger.options.entity.destroyed=エンティティが破壊された
+
+rpglogger.options.env.enterWorld=ワールドに入った
+rpglogger.options.env.rainBegan=雨雪が降り始めた
+rpglogger.options.env.rainLetUp=雨雪が止んだ
+rpglogger.options.env.brightened=空が明るくなった
+rpglogger.options.env.darkened=空が暗くなった
+rpglogger.options.env.morning=朝が来た
+rpglogger.options.env.noon=昼になった
+rpglogger.options.env.night=夜がもうすぐ来る
+rpglogger.options.env.midnight=真夜中だ
+rpglogger.options.env.dayBegan=一日が始まった
+rpglogger.options.env.thunderBegan=雷雨になった
+rpglogger.options.env.thunderStopped=雷がおさまった
+rpglogger.options.env.enterBiome=バイオームに入った
+rpglogger.options.env.traveledDimension=ディメンションへ移動した
+rpglogger.options.env.traveledBack=通常世界に戻ってきた

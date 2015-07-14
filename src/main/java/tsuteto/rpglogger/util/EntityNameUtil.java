@@ -5,12 +5,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import tsuteto.rpglogger.RpgLogger;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
-import tsuteto.rpglogger.param.ParamEntity;
-import tsuteto.rpglogger.param.ParamEntityAgeable;
-import tsuteto.rpglogger.param.ParamEntityLiving;
-import tsuteto.rpglogger.param.ParamEntityThrowable;
-import tsuteto.rpglogger.param.ParamMob;
-import tsuteto.rpglogger.param.ParamVillager;
+import tsuteto.rpglogger.param.*;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
 import tsuteto.rpglogger.stat.StatEntityLivingBase;
 import tsuteto.rpglogger.stat.StatGame;
@@ -172,17 +167,17 @@ public class EntityNameUtil
         Item item = itemstack.getItem();
         String itemName = item.getUnlocalizedName(itemstack);
 
-        String name = null;
+        String name;
 
-        // Common
-        name = msgTrans.translateNamedKey(itemName);
+        // Rl custom
+        name = msgTrans.rlTranslateNamedKey(itemName);
 
-        if (name != null && name.length() != 0)
+        if (name != null)
         {
             return name;
         }
 
-        // For some blocks by Forge MOD
+        // Vanilla standard
         name = item.getItemStackDisplayName(itemstack);
 
         if (name != null && name.length() != 0)

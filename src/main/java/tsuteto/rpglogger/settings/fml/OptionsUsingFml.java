@@ -1,5 +1,6 @@
 package tsuteto.rpglogger.settings.fml;
 
+import com.google.common.collect.Maps;
 import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -10,8 +11,12 @@ import tsuteto.rpglogger.RpgLogger;
 import tsuteto.rpglogger.battle.EnumEnemyIdType;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
 import tsuteto.rpglogger.settings.EnumWindowPosition;
+import tsuteto.rpglogger.settings.LogCategory;
+import tsuteto.rpglogger.settings.LogType;
 import tsuteto.rpglogger.settings.OptionsApi;
 import tsuteto.rpglogger.util.Utilities;
+
+import java.util.EnumMap;
 
 /**
  * Handles RPG Logger settings for ForgeModLoader
@@ -32,11 +37,14 @@ public class OptionsUsingFml implements OptionsApi
     public boolean isExportLogEnabled = true;
     public int scale = 0;
     public int position = 0;
+    public int windowWidth = 200;
     public int allyPrefix = 0;
     public String language = "auto";
     public String enemyIdType = "A";
     public int memoryAlert = 90;
     public boolean updateCheck = true;
+
+    public EnumMap<LogType, Boolean> logSwitchMap = Maps.newEnumMap(LogType.class);
 
     public OptionsUsingFml(Configuration conf)
     {
@@ -68,6 +76,12 @@ public class OptionsUsingFml implements OptionsApi
                 .setValidValues(new String[]{"0", "1", "2"})
                 .setLanguageKey("rpglogger.options.position")
                 .setConfigEntryClass(CycleValueTranslateEntry.class)
+                .getInt();
+
+        this.windowWidth = conf.get(CAT_DISPLAY, "width", this.windowWidth, "Log window's width.")
+                .setMinValue(100).setMaxValue(320)
+                .setLanguageKey("rpglogger.options.width")
+                .setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class)
                 .getInt();
 
         this.language = conf.get(CAT_MESSAGE, "language", language, "Language in logger messages. auto=follow the game settings, ja_JP=Japanese, ja_kana_JP=Japanese kana, en_US=English.")
@@ -103,9 +117,34 @@ public class OptionsUsingFml implements OptionsApi
                 .setLanguageKey("rpglogger.options.updateCheck")
                 .getBoolean(updateCheck);
 
+        for (LogType logType : LogType.values())
+        {
+            String[] items = logType.name().split("_");
+            LogCategory cat;
+            try
+            {
+                cat = LogCategory.valueOf(items[0]);
+            }
+            catch (IllegalArgumentException e)
+            {
+                cat = LogCategory.misc;
+            }
+            String langKey = logType.name().replace('_', '.');
+
+            boolean isEnabled = conf.get(cat.getFullName(), logType.name(), true)
+                    .setLanguageKey("rpglogger.options." + langKey)
+                    .getBoolean(true);
+            this.logSwitchMap.put(logType, isEnabled);
+        }
+
         conf.getCategory(CAT_DISPLAY).setLanguageKey("rpglogger.options.category.display");
         conf.getCategory(CAT_MESSAGE).setLanguageKey("rpglogger.options.category.message");
         conf.getCategory(CAT_SYSTEM).setLanguageKey("rpglogger.options.category.system");
+
+        for (LogCategory cat : LogCategory.values())
+        {
+            conf.getCategory(cat.getFullName()).setLanguageKey("rpglogger.options.category." + cat.name());
+        }
 
         if (conf.hasChanged())
         {
@@ -160,6 +199,12 @@ public class OptionsUsingFml implements OptionsApi
     }
 
     @Override
+    public int getWindowWidth()
+    {
+        return this.windowWidth;
+    }
+
+    @Override
     public int getAllyPrefix()
     {
         return this.allyPrefix;
@@ -175,6 +220,19 @@ public class OptionsUsingFml implements OptionsApi
     public EnumEnemyIdType getEnemyIdType()
     {
         return EnumEnemyIdType.valueOf(this.enemyIdType);
+    }
+
+    @Override
+    public boolean isLogEnabled(LogType logType)
+    {
+        if (this.logSwitchMap.containsKey(logType))
+        {
+            return this.logSwitchMap.get(logType);
+        }
+        else
+        {
+            return true;
+        }
     }
 
     public int getMemoryAlertThreshold()

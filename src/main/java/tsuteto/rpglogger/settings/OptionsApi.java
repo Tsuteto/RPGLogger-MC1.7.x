@@ -17,10 +17,12 @@ public interface OptionsApi
     int getLines();
     int getScale();
     EnumWindowPosition getPosition();
+    int getWindowWidth();
     boolean isExportLogEnabled();
     int getAllyPrefix();
     Lang getLanguage();
     EnumEnemyIdType getEnemyIdType();
+    boolean isLogEnabled(LogType logType);
     int getMemoryAlertThreshold();
     boolean getUpdateCheck();
 }

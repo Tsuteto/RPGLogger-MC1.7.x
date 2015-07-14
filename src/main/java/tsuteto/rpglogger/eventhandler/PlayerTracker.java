@@ -23,7 +23,7 @@ public class PlayerTracker
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        rpgLogger.releaseLogger();
+        rpgLogger.onPlayerLogoutWorld(event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

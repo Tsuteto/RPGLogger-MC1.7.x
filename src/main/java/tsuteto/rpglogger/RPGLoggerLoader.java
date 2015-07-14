@@ -1,5 +1,6 @@
 package tsuteto.rpglogger;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.*;
@@ -14,7 +15,7 @@ import tsuteto.rpglogger.util.UpdateNotification;
  * @author Tsuteto
  *
  */
-@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.8.0-MC1.7.2",
+@Mod(modid = RPGLoggerLoader.modid, name = "RPG Logger", version = "3.9.0-MC1.7.2",
         acceptedMinecraftVersions = "[1.7.2,1.8)",
         guiFactory = "tsuteto.rpglogger.settings.fml.RlGuiFactory")
 public class RPGLoggerLoader
@@ -83,6 +84,6 @@ public class RPGLoggerLoader
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event)
     {
-        rpgLogger.releaseLogger();
+        rpgLogger.onPlayerLogoutWorld(FMLClientHandler.instance().getClientPlayerEntity());
     }
 }

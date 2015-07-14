@@ -279,7 +279,7 @@ public class Utilities
     public static int calcUsingMemory()
     {
         Runtime rt = Runtime.getRuntime();
-        return (int) ((double) (rt.totalMemory() - rt.freeMemory()) / rt.totalMemory() * 100);
+        return (int) ((double) (rt.totalMemory() - rt.freeMemory()) / rt.maxMemory() * 100);
     }
 
     /**

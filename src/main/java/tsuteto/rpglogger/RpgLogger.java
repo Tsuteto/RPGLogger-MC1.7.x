@@ -29,10 +29,12 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import tsuteto.rpglogger.eventhandler.*;
+import tsuteto.rpglogger.gui.GuiRlControl;
 import tsuteto.rpglogger.logging.LogFileWriter;
 import tsuteto.rpglogger.logging.RlLogManager;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
 import tsuteto.rpglogger.param.*;
+import tsuteto.rpglogger.settings.LogType;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
 import tsuteto.rpglogger.settings.fml.OptionsUsingFml;
 import tsuteto.rpglogger.stat.StatClient;
@@ -58,8 +60,7 @@ public class RpgLogger
     private static RpgLogger instance;
 
     /** Key binding to toggle the log window */
-    public static final KeyBinding KB_TOGGLE_WINDOW = new KeyBinding("rpglogger.keybind.logWindow", Keyboard.KEY_L, "rpglogger.keybind");
-    public static final KeyBinding KB_SHOW_LOG_FILE = new KeyBinding("rpglogger.keybind.openLog", Keyboard.KEY_SEMICOLON, "rpglogger.keybind");
+    public static final KeyBinding KB_SHOW_CONTROL = new KeyBinding("rpglogger.keybind.openControl", Keyboard.KEY_L, "rpglogger.keybind");
 
     public static Class dqmEntityTameable = null;
 
@@ -70,7 +71,7 @@ public class RpgLogger
     public RpgLoggerSettings settings;
     public RlMsgTranslate msgTrans;
     public LogFileWriter logFileWriter;
-    public LogWindowRenderer windowRenderer;
+    public GuiRlControl logWindowGui;
     private LoggerTask loggerTask;
 
     public StatGame statGame = null;
@@ -132,8 +133,7 @@ public class RpgLogger
         FMLCommonHandler.instance().bus().register(settings.getFmlSettings());
         FMLCommonHandler.instance().bus().register(new PlayerTracker(this));
         FMLCommonHandler.instance().bus().register(new GameTickHandler(this));
-        ClientRegistry.registerKeyBinding(KB_TOGGLE_WINDOW);
-        ClientRegistry.registerKeyBinding(KB_SHOW_LOG_FILE);
+        ClientRegistry.registerKeyBinding(KB_SHOW_CONTROL);
         FMLCommonHandler.instance().bus().register(new ModKeyHandler(this));
         MinecraftForge.EVENT_BUS.register(new GameTickHandler(this));
         MinecraftForge.EVENT_BUS.register(new CraftingHandler(this));
@@ -157,11 +157,11 @@ public class RpgLogger
         RlMsgTranslate.createInstance(lang);
         this.msgTrans = RlMsgTranslate.getInstance();
 
-        // Create renderer of the log window on the screen
-        this.windowRenderer = new LogWindowRenderer();
-
         // Obtain log writer
         this.logger = new RlLogManager(this);
+
+        // Create renderer of the log window on the screen
+        this.logWindowGui = new GuiRlControl(FMLClientHandler.instance().getClient());
 
         // Create logger task
         this.loggerTask = new LoggerTask(this);
@@ -286,6 +286,12 @@ public class RpgLogger
         RpgLogger.infoLog(String.format("Initialized for the world '%s'", worldName));
     }
 
+    public void onPlayerLogoutWorld(EntityPlayer player)
+    {
+        logger.addMsgTranslate(player, "env.leaveWorld", Color.yellow);
+        this.releaseLogger();
+    }
+
     public void onPlayerTraveledDimension(EntityPlayer player)
     {
         setupTick = 3;
@@ -321,6 +327,7 @@ public class RpgLogger
             Minecraft mc = FMLClientHandler.instance().getClient();
             if (mc.thePlayer == null) return;
             EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(mc.thePlayer.getCommandSenderName());
+            if (player == null) return;
 
             World world = player.worldObj;
             paramWorld = new ParamWorld(world, player);
@@ -350,10 +357,10 @@ public class RpgLogger
         }
         finally
         {
-            double elapsed = (System.nanoTime() - start) / 1000000.0D;
-            if (elapsed > 100.0D)
+            long elapsed = (System.nanoTime() - start) / 1000000L;
+            if (elapsed > 100)
             {
-                infoLog("Overload warning. onTick time: %.0fms", elapsed);
+                infoLog("Overload warning. onTick time: %dms", elapsed);
             }
         }
     }
@@ -362,7 +369,7 @@ public class RpgLogger
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        windowRenderer.updateTick();
+        logWindowGui.updateTick();
 
         ParamClient paramClient = new ParamClient(mc);
 
@@ -628,7 +635,10 @@ public class RpgLogger
         if (param.entityId == paramPlayer.entityId)
         {
             CombatTracker combatTracker = entity.func_110142_aN();
-            logger.log(combatTracker.func_151521_b().getFormattedText(), Color.yellow);
+            if (settings.isLogEnabled(LogType.player_death))
+            {
+                logger.log(combatTracker.func_151521_b().getFormattedText(), Color.yellow);
+            }
             return;
         }
 
@@ -676,13 +686,13 @@ public class RpgLogger
             if (stat.isTamed())
             {
                 // Ally mobs killed
-                logger.addMsgTranslate("death." + damagesource.damageType,
+                logger.addMsgTranslate(LogType.mob_death, "death." + damagesource.damageType,
                         Color.pink, entityName, dmgSrcEntityName);
                 return;
             }
             else
             {
-                logger.addMsgTranslate("death." + damagesource.damageType,
+                logger.addMsgTranslate(LogType.mob_death, "death." + damagesource.damageType,
                         Color.white, entityName, dmgSrcEntityName);
             }
         }
@@ -726,27 +736,11 @@ public class RpgLogger
      */
     public void keyboardEvent(Minecraft mc)
     {
-        if (KB_TOGGLE_WINDOW.isPressed())
+        if (mc.currentScreen == null)
         {
-            if (mc.thePlayer != null)
+            if (KB_SHOW_CONTROL.isPressed())
             {
-                if (isWindowEnabled ^= true)
-                {
-                    mc.thePlayer.addChatMessage(new ChatComponentTranslation("rpglogger.options.turnedWindow.on"));
-                }
-                else
-                {
-                    mc.thePlayer.addChatMessage(new ChatComponentTranslation("rpglogger.options.turnedWindow.off"));
-                }
-            }
-        }
-
-        if (KB_SHOW_LOG_FILE.isPressed())
-        {
-            if (logFileWriter != null)
-            {
-                mc.thePlayer.addChatMessage(new ChatComponentTranslation("rpglogger.openLogFileNotice"));
-                logFileWriter.showLogFile();
+                mc.displayGuiScreen(this.logWindowGui);
             }
         }
     }

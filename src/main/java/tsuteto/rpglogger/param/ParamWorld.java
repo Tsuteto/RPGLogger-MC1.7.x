@@ -27,6 +27,7 @@ public class ParamWorld
     public float rainfall;
 
     public long worldTime;
+    public long totalWorldTime;
     public String worldName;
 
     public int worldObjHash;
@@ -48,6 +49,7 @@ public class ParamWorld
         biomeID = biome.biomeID;
 
         worldTime = world.getWorldTime();
+        totalWorldTime = world.getTotalWorldTime();
         worldName = world.getWorldInfo().getWorldName();
 
         mapHeight = chunk.getHeightValue(px & 15, pz & 15);

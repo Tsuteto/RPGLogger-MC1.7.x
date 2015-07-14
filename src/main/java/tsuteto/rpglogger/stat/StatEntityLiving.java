@@ -22,7 +22,7 @@ public class StatEntityLiving<E extends ParamEntityLiving> extends StatEntityLiv
 
         if (this.statIsTied.checkVal(param.isLeashed))
         {
-            String key = statIsTied.getVal() ? "mob.released" : "mob.tied";
+            String key = statIsTied.getVal() ? "mob.tied" : "mob.released";
             logger.addMsgTranslate(key, msgColor, EntityNameUtil.getMobName(param));
         }
     }

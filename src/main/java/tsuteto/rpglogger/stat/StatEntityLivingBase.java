@@ -9,6 +9,7 @@ import tsuteto.rpglogger.param.ParamEntity;
 import tsuteto.rpglogger.param.ParamEntityLivingBase;
 import tsuteto.rpglogger.param.ParamMob;
 import tsuteto.rpglogger.param.ParamPlayer;
+import tsuteto.rpglogger.settings.LogType;
 import tsuteto.rpglogger.util.EntityNameUtil;
 import tsuteto.rpglogger.util.Utilities;
 import tsuteto.rpglogger.watcher.WatchBool;
@@ -187,15 +188,15 @@ public class StatEntityLivingBase<E extends ParamEntityLivingBase> extends StatE
                 String potionName = potion.getName();
                 if (this.statPotion[potion.id].getVal())
                 {
-                    logger.addMsgTranslate("mob." + potionName + ".got",
-                            msgColor, EntityNameUtil.getMobName(param));
+                    String key = "mob." + potionName + ".got";
+                    logger.addMsgTranslate(LogType.mob_potion, key, msgColor, EntityNameUtil.getMobName(param));
                 }
                 else
                 {
                     String key = "mob." + potionName + ".gone";
                     if (msgTrans.isKeyAvailable(key))
                     {
-                        logger.addMsgTranslate(key, msgColor, EntityNameUtil.getMobName(param));
+                        logger.addMsgTranslate(LogType.mob_potion, key, msgColor, EntityNameUtil.getMobName(param));
                     }
                 }
             }

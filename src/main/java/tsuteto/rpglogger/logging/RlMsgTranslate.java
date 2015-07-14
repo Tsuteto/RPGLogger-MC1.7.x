@@ -1,6 +1,5 @@
 package tsuteto.rpglogger.logging;
 
-import com.google.common.base.Strings;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.StatCollector;
@@ -239,21 +238,16 @@ public class RlMsgTranslate
 
     public String translateNamedKey(String s)
     {
-        String name = customTranslateNamedKey(s);
-        // RpgLogger.systemLog("Custom: " + name);
-        if (name != null)
-        {
-            return name;
-        }
+        String name;
         name = rlTranslateNamedKey(s);
         // RpgLogger.systemLog("RL translate: " + name);
         if (name != null)
         {
             return name;
         }
-        name = StatCollector.translateToLocal(s + ".name"); // spitted back the key string if no message found
+        name = vanillaTranslateNamedKey(s);
         //RpgLogger.systemLog("Internal translate: " + name);
-        if (!name.equals(s + ".name"))
+        if (name != null)
         {
             return name;
         }
@@ -262,7 +256,14 @@ public class RlMsgTranslate
 
     public String rlTranslateNamedKey(String s)
     {
-        String name = rlTranslateTable.getProperty(s + ".name");
+        String name;
+        name = rlTranslateTable.getProperty(s + ".name");
+        if (name != null && name.length() != 0)
+        {
+            return name;
+        }
+
+        name = customTranslateTable.getProperty(s + ".name");
         if (name != null && name.length() != 0)
         {
             return name;
@@ -270,10 +271,12 @@ public class RlMsgTranslate
         return null;
     }
 
-    public String customTranslateNamedKey(String s)
+    public String vanillaTranslateNamedKey(String s)
     {
-        String name = customTranslateTable.getProperty(s + ".name");
-        if (name != null && name.length() != 0)
+        String name;
+        name = StatCollector.translateToLocal(s + ".name"); // spitted back the key string if no message found
+        //RpgLogger.systemLog("Internal translate: " + name);
+        if (!name.equals(s + ".name"))
         {
             return name;
         }

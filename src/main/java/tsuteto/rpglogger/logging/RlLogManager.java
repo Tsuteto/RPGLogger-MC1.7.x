@@ -4,8 +4,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import tsuteto.rpglogger.LogWindowRenderer;
 import tsuteto.rpglogger.RpgLogger;
+import tsuteto.rpglogger.settings.LogType;
 import tsuteto.rpglogger.util.Utilities;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ import java.util.List;
 public class RlLogManager
 {
     public List<RlLogLine> logMsgList = new ArrayList<RlLogLine>();
-    private int timeSinceLastLog = 0;
+    private int updateTick = 0;
     private FontRenderer fontRenderer;
     private RpgLogger rpgLogger;
 
@@ -56,52 +56,60 @@ public class RlLogManager
             rpgLogger.logFileWriter.writeLog(s, player);
         }
         addToList(s, color);
-        timeSinceLastLog = 0;
     }
 
     private void addToList(String s, Color color)
     {
-        int i;
-        for (; fontRenderer.getStringWidth(s) > LogWindowRenderer.LOG_FIELD_WIDTH; s = s.substring(0, i))
-        {
-            for (i = 1; i < s.length()
-                    && fontRenderer.getStringWidth(s.substring(0, i + 1)) <= LogWindowRenderer.LOG_FIELD_WIDTH; i++)
-            {}
-            addToList(s.substring(i), color);
-        }
+        RlLogLine newLog = new RlLogLine(s, color, updateTick);
 
-        logMsgList.add(0, new RlLogLine(s, color));
-        if (logMsgList.size() > 50)
+        RpgLogger.getInstance().logWindowGui.addToList(newLog);
+
+        logMsgList.add(0, newLog);
+        if (logMsgList.size() > 500)
         {
             logMsgList.remove(logMsgList.size() - 1);
         }
     }
 
-    public void addMsgTranslate(String s, Color color)
-    {
-        String s1 = rpgLogger.msgTrans.getMsg(s);
-        log(s1, color);
-    }
-
     public void addMsgTranslate(String s, Color color, Object... aobj)
     {
-        String s1 = rpgLogger.msgTrans.getMsg(s, aobj);
-        log(s1, color);
+        this.addMsgTranslate((EntityPlayer)null, s, color, aobj);
     }
 
     public void addMsgTranslate(EntityPlayer player, String s, Color color, Object... aobj)
     {
-        String s1 = rpgLogger.msgTrans.getMsg(s, aobj);
-        log(s1, color, player);
+        String key = s.replace('.', '_');
+        this.addMsgTranslate(LogType.parse(key), player, s, color, aobj);
+    }
+
+    public void addMsgTranslate(LogType logType, String s, Color color, Object... aobj)
+    {
+        this.addMsgTranslate(logType, null, s, color, aobj);
+    }
+
+    public void addMsgTranslate(LogType logType, EntityPlayer player, String s, Color color, Object... aobj)
+    {
+        if (logType == null || rpgLogger.settings.isLogEnabled(logType))
+        {
+            String s1 = rpgLogger.msgTrans.getMsg(s, aobj);
+            if (player != null)
+            {
+                log(s1, color, player);
+            }
+            else
+            {
+                log(s1, color);
+            }
+        }
+    }
+
+    public int getUpdateTick()
+    {
+        return this.updateTick;
     }
 
     public void onTick()
     {
-        timeSinceLastLog++;
-    }
-
-    public int getTimeSinceLastLog()
-    {
-        return timeSinceLastLog;
+        updateTick++;
     }
 }

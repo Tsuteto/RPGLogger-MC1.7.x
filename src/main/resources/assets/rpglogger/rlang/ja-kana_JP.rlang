@@ -197,7 +197,8 @@ entity.Villager.name=村人
 entity.EnderCrystal.name=エンダークリスタル
 entity.destroyed=%1$sが はかいされた
 
-env.enterWorld=ワールド %1$sに はいった!
+env.enterWorld=ワールド「%1$s」に はいった!
+env.leaveWorld=ワールドから さった
 env.rainBegan=%1$sが ふりはじめた
 env.rainLetUp=%1$sが やんだ
 env.brightened=そらが あかるくなった

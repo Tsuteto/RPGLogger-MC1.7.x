@@ -38,9 +38,9 @@ public class GameTickHandler
     public void renderGameScreen(RenderGameOverlayEvent.Text event)
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
-        if (rpgLogger.isWindowEnabled)
+        if (rpgLogger.isWindowEnabled || this.rpgLogger.logWindowGui.isWindowOpen())
         {
-            rpgLogger.windowRenderer.renderGameOverlay(mc);
+            rpgLogger.logWindowGui.draw();
         }
 
     }

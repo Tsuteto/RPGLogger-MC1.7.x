@@ -7,6 +7,7 @@ import net.minecraft.util.MathHelper;
 import tsuteto.rpglogger.logging.RlLogManager;
 import tsuteto.rpglogger.logging.RlMsgTranslate;
 import tsuteto.rpglogger.param.*;
+import tsuteto.rpglogger.settings.LogType;
 import tsuteto.rpglogger.settings.RpgLoggerSettings;
 import tsuteto.rpglogger.stat.*;
 import tsuteto.rpglogger.util.EntityNameUtil;
@@ -166,14 +167,15 @@ public class LoggerTask
                         String potionName = potion.getName();
                         if (statPlayer.statPotion[potion.id].getVal())
                         {
-                            logger.addMsgTranslate("player." + potionName + ".got", Color.yellow);
+                            String key = "player." + potionName + ".got";
+                            logger.addMsgTranslate(LogType.player_potion, key, Color.yellow);
                         }
                         else
                         {
                             String key = "player." + potionName + ".gone";
                             if (msgTrans.isKeyAvailable(key))
                             {
-                                logger.addMsgTranslate(key, Color.yellow);
+                                logger.addMsgTranslate(LogType.player_potion, key, Color.yellow);
                             }
                         }
                     }
@@ -221,7 +223,7 @@ public class LoggerTask
                 {
                     logger.addMsgTranslate("player.walked",
                             Color.white,
-                            new Float(statPlayer.msWalk.getMilestonePassed() / 1000).toString());
+                            Float.toString(statPlayer.msWalk.getMilestonePassed() / 1000));
                 }
 
                 // Obtaining items
@@ -453,7 +455,8 @@ public class LoggerTask
         // Messages while idling
         // --------------------------
         int idleMsgPhase = (statPlayer.idleTime - 300) / 30;
-        if (idleMsgPhase >= 0 && statPlayer.idleTime % 30 == 0)
+        if (rpgLogger.settings.isLogEnabled(LogType.player_idle)
+                && idleMsgPhase >= 0 && statPlayer.idleTime % 30 == 0)
         {
             switch (idleMsgPhase)
             {
@@ -582,7 +585,7 @@ public class LoggerTask
                 }
             }
 
-            if (statGame.statMemoryAlert.getVal() && world.worldTime % 200 == 0)
+            if (statGame.statMemoryAlert.getVal() && world.totalWorldTime % 200 == 0)
             {
                 logger.addMsgTranslate("system.memory.report", Color.red, usingMemory);
             }

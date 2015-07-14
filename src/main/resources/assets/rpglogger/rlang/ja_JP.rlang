@@ -198,6 +198,7 @@ entity.EnderCrystal.name=エンダークリスタル
 entity.destroyed=%1$sが破壊された
 
 env.enterWorld=ワールド「%1$s」に入った!
+env.leaveWorld=ワールドから去った
 env.rainBegan=%1$sが降り始めた
 env.rainLetUp=%1$sが止んだ
 env.brightened=空が明るくなった

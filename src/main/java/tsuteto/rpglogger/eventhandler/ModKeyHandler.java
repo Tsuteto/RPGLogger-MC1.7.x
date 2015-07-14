@@ -20,9 +20,8 @@ public class ModKeyHandler
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
 
-        if (mc.currentScreen == null && mc.thePlayer != null)
+        if (mc.thePlayer != null && rpgLogger != null)
         {
-            if (rpgLogger == null) return;
             rpgLogger.keyboardEvent(mc);
         }
     }

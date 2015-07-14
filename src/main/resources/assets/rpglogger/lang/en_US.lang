@@ -1,13 +1,20 @@
 rpglogger.options.title=RPG Logger Configuration
 
 rpglogger.options.category.message=Message
+rpglogger.options.category.msgSwitch=Message Switch
 rpglogger.options.category.system=System
 rpglogger.options.category.display=Display
+
+rpglogger.options.category.player=Player
+rpglogger.options.category.mob=Mob
+rpglogger.options.category.env=Environment
+rpglogger.options.category.misc=Misc.
 
 rpglogger.options.openLogFile=Open log file on your desktop
 rpglogger.options.exportLog=Export Log to Files
 rpglogger.options.allyPrefix=Ally Prefix
 rpglogger.options.position=Position
+rpglogger.options.width=Width
 rpglogger.options.scale=Scale
 rpglogger.options.lines=Num of lines
 rpglogger.options.opacity=Opacity %%
@@ -24,9 +31,6 @@ rpglogger.options.position.0=Top-right
 rpglogger.options.position.1=Top-center
 rpglogger.options.position.2=Top-left
 
-rpglogger.options.turnedWindow.on=RPG Logger window: ON
-rpglogger.options.turnedWindow.off=RPG Logger window: OFF
-
 rpglogger.options.language.auto=Auto
 rpglogger.options.language.en_US=English
 rpglogger.options.language.ja_JP=Japanese
@@ -36,14 +40,119 @@ rpglogger.options.enemyIdType.A=A B C...
 rpglogger.options.enemyIdType.N=1 2 3...
 rpglogger.options.enemyIdType.off=None
 
+rpglogger.control.title=RPG Logger Control
+rpglogger.control.openLog=Open log file on desktop
+rpglogger.control.toggleWindow=Show log window: %s
+rpglogger.control.guide=* Use mouse wheel to scroll log
+rpglogger.control.close=Close
+
 rpglogger.keybind=RPG Logger
-rpglogger.keybind.logWindow=Toggle Logger window
-rpglogger.keybind.openLog=Open Log File
+rpglogger.keybind.openControl=Open control screen
 
 rpglogger.langfile.incorrect=[RPG Logger] Could not read custom lang file. Please check the format.
 rpglogger.langfile.updated=[RPG Logger] Updated custom lang file.
-rpglogger.openLogFileNotice=[RPG Logger] Opening log file...
 
 rpglogger.update.server=RPG Logger has been updated to %1$s, available at %2$s
 rpglogger.update.client=§eRPG Logger§r has been updated to §a%1$s§r! %2$s
 rpglogger.update.link=§nDownload here§r
+
+#
+#
+#
+rpglogger.options.player.gainedXp=Gained exp.
+rpglogger.options.player.lostXp=Lost exp.
+rpglogger.options.player.increasedLvl=Level increased
+rpglogger.options.player.gotInWater=Got in water
+rpglogger.options.player.gotOutOfWater=Got out of water
+rpglogger.options.player.healed=Healed
+rpglogger.options.player.filledBelly=Refilled fullness
+rpglogger.options.player.fellAsleep=Fell asleep
+rpglogger.options.player.wokeUp=Woke up
+rpglogger.options.player.gaveDmg=Gave damage
+rpglogger.options.player.gaveDmgBy=Gave damage with weapons
+rpglogger.options.player.tookDmg=Took damage
+rpglogger.options.player.tookDmgBy=Took damage from weapons
+rpglogger.options.player.tookDmgByMob=Took damage from a mob
+rpglogger.options.player.defeated=Defeated
+rpglogger.options.player.death=Died
+rpglogger.options.player.itemPickup=Picked up some items
+rpglogger.options.player.sumItems=Obtained drops of item
+rpglogger.options.player.crafted=Crafted items
+rpglogger.options.player.smelted=Took items out of furnace
+rpglogger.options.player.fell=Distance fell
+rpglogger.options.player.threw=threw an item
+rpglogger.options.player.bow=Greeted mobs
+rpglogger.options.player.backToSurface=Coming back to the surface
+rpglogger.options.player.goingUnderground=Going underground
+rpglogger.options.player.walked=Distance walked
+rpglogger.options.player.foundMob=A mob appeared
+rpglogger.options.player.lostMob=Lost sight of mobs
+rpglogger.options.player.respawn=Respawned
+rpglogger.options.player.emptyHand=Made your hand empty
+rpglogger.options.player.tookItem=Took hold of an item
+rpglogger.options.player.rode=Rode a ride
+rpglogger.options.player.getOff=Got off a ride
+rpglogger.options.player.finishedBattle=Battle finished
+rpglogger.options.player.achievement=Got an achievement
+rpglogger.options.player.potion=Potion effects
+rpglogger.options.player.idle=Idling
+
+rpglogger.options.party.owned.single=Owned an enemy
+rpglogger.options.party.owned.multiple=Owned multiple enemies
+
+rpglogger.options.item.flew=Item flew
+
+rpglogger.options.fireworks.launch=Firework took off
+
+rpglogger.options.wolf.shaking=Wolf shook its body
+rpglogger.options.wolf.angry=Wolf got angry
+
+rpglogger.options.bat.flewOff=Bat flew off
+rpglogger.options.witch.aggressive=Witch taking a potion
+
+rpglogger.options.mob.gotTamed=Got tamed to you!
+rpglogger.options.mob.healed=Healed
+rpglogger.options.mob.threw=Threw an item
+rpglogger.options.mob.gaveDmg=Gave damage
+rpglogger.options.mob.gaveDmgBy=Gave damage with weapons
+rpglogger.options.mob.tookDmg=Took damage
+rpglogger.options.mob.tookDmgBy=Took damage from weapons
+rpglogger.options.mob.tookDmgByMob=Took damage from others
+rpglogger.options.mob.defeated=Defeated
+rpglogger.options.mob.death=Died
+rpglogger.options.mob.spawned=Spawned
+rpglogger.options.mob.growUp=Grew up
+rpglogger.options.mob.backToChild=Got back to child
+rpglogger.options.mob.inLove=Now in heat
+rpglogger.options.mob.rode=Rode a ride
+rpglogger.options.mob.getOff=Got off a ride
+rpglogger.options.mob.tied=Got tied with a lead
+rpglogger.options.mob.released=Released from the lead
+rpglogger.options.mob.equippedChest=Equipped a chest
+rpglogger.options.mob.tookOffChest=Took off its chest
+rpglogger.options.mob.equipped=Equipped armors
+rpglogger.options.mob.tookOffArmor=Took off its armor
+rpglogger.options.mob.temper.inc=Mood raised
+rpglogger.options.mob.temper.dec=Mood got down
+rpglogger.options.mob.potion=Potion effects
+
+rpglogger.options.villager.isMating=Villager is now mating
+rpglogger.options.villager.startPlaying=Villager playing around
+
+rpglogger.options.entity.destroyed=Entity destroyed
+
+rpglogger.options.env.enterWorld=Player entered a world
+rpglogger.options.env.rainBegan=It began to rain/snow
+rpglogger.options.env.rainLetUp=Rain/Snow let up
+rpglogger.options.env.brightened=The sky has brightened
+rpglogger.options.env.darkened=The sky has darkened
+rpglogger.options.env.morning=Morning has come
+rpglogger.options.env.noon=It's noon
+rpglogger.options.env.night=Night is coming soon
+rpglogger.options.env.midnight=It's midnight
+rpglogger.options.env.dayBegan=A day began
+rpglogger.options.env.thunderBegan=It has been thunderstorm
+rpglogger.options.env.thunderStopped=Thundering stopped
+rpglogger.options.env.enterBiome=Entered a biome
+rpglogger.options.env.traveledDimension=Traveled to a dimension
+rpglogger.options.env.traveledBack=Came back to the Overworld

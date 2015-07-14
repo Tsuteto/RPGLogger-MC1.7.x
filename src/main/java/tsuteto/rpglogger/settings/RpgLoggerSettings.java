@@ -69,6 +69,11 @@ public class RpgLoggerSettings
         return api.getPosition();
     }
 
+    public int getWindowWidth()
+    {
+        return api.getWindowWidth();
+    }
+
     public int getAllyPrefix()
     {
         return api.getAllyPrefix();
@@ -82,6 +87,11 @@ public class RpgLoggerSettings
     public EnumEnemyIdType getEnemyIdType()
     {
         return api.getEnemyIdType();
+    }
+
+    public boolean isLogEnabled(LogType logType)
+    {
+        return api.isLogEnabled(logType);
     }
 
     public int getMemoryAlertThreshold()
